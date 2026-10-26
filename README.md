@@ -1,31 +1,34 @@
 # Plava Consulting Ltd Website
 
 ## Overview
-This project implements the website for Plava Consulting Ltd, an IT consulting firm based in Milton Keynes, UK, specializing in AI-based tools.
+Plava Consulting Ltd is an IT consulting company based in Milton Keynes, UK, specializing in AI-based tools development and support. This project delivers a modern, responsive website built with Node.js and React.
 
 ## Features
-- Health check endpoint at `/health` returning status `ok`
-- API endpoint `/api/plava-website` serving website content from fixture data
+- Health check endpoint (`GET /health`) to verify service status.
+- API endpoint (`GET /api/plava-website`) serving website content from fixture data.
+- Frontend React application rendering company information and services.
+- Backend Express server serving APIs and frontend assets.
 
-## Architecture
-- Backend API built with Node.js and Express.js
-- Fixture data stored in JSON files under `fixtures/`
-- Frontend consumes backend APIs to display dynamic content
+## Technologies
+- Node.js
+- Express
+- React
+- Jest for testing
+- ESLint for linting
 
 ## API Endpoints
-| Method | Path               | Description               |
-|--------|--------------------|---------------------------|
-| GET    | /health            | Returns `ok` for health check |
-| GET    | /api/plava-website | Returns website content from fixtures |
+| Method | Path               | Description                 |
+|--------|--------------------|-----------------------------|
+| GET    | /health            | Service health check        |
+| GET    | /api/plava-website | Retrieve website content    |
 
 ## Setup
 1. Install dependencies: `npm install`
-2. Start server: `npm start`
-3. Access frontend via `public/index.html` or API endpoints directly
+2. Run development server: `npm start`
+3. Run tests: `npm test`
 
-## Development
-- Fixture data located in `fixtures/data.json`
-- Backend code in `src/app.js`
+## Deployment
+Deploy using existing Git connection "Plavagit" and pipeline targeting the dev environment. Rollback owner: Platform on-call.
 
 ## License
 MIT
