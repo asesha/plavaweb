@@ -1,0 +1,101 @@
+{
+  "company": {
+    "name": "Plava Consulting Ltd",
+    "location": "Milton Keynes, UK",
+    "industry": "IT Consulting",
+    "description": "Plava Consulting Ltd is an IT consulting firm specializing in AI-based tools development and support.",
+    "services": [
+      "AI Tool Development",
+      "IT Consulting",
+      "AI Tool Support",
+      "Custom Software Solutions"
+    ]
+  },
+  "team": [
+    {
+      "id": 1,
+      "name": "Sesh A",
+      "role": "Lead Architect",
+      "bio": "Experienced enterprise delivery architect overseeing Plava website development."
+    },
+    {
+      "id": 2,
+      "name": "Jane Doe",
+      "role": "Frontend Developer",
+      "bio": "React specialist focused on building responsive UI components."
+    },
+    {
+      "id": 3,
+      "name": "John Smith",
+      "role": "Backend Developer",
+      "bio": "Node.js expert responsible for API and server-side logic."
+    }
+  ],
+  "projects": [
+    {
+      "id": "KAN-1",
+      "name": "Plava Website",
+      "description": "Develop a modern, responsive website for Plava Consulting Ltd.",
+      "status": "Completed",
+      "technologies": ["Node.js", "Express", "React"],
+      "apis": [
+        {
+          "method": "GET",
+          "path": "/health",
+          "description": "Health check endpoint to verify service status."
+        },
+        {
+          "method": "GET",
+          "path": "/api/plava-website",
+          "description": "Fetch Plava website content and metadata."
+        }
+      ]
+    }
+  ],
+  "content": {
+    "homepage": {
+      "title": "Welcome to Plava Consulting Ltd",
+      "subtitle": "Innovating IT Consulting with AI",
+      "intro": "Based in Milton Keynes, UK, Plava Consulting Ltd delivers cutting-edge AI tools and IT consulting services to empower your business.",
+      "callToAction": {
+        "text": "Contact Us",
+        "url": "/contact"
+      }
+    },
+    "about": {
+      "heading": "About Plava Consulting Ltd",
+      "paragraphs": [
+        "Plava Consulting Ltd is a trusted IT consulting partner specializing in AI-driven solutions.",
+        "Our team combines deep industry knowledge with advanced technology expertise to deliver impactful results.",
+        "We are committed to innovation, quality, and customer satisfaction."
+      ]
+    },
+    "services": [
+      {
+        "id": "svc1",
+        "name": "AI Tool Development",
+        "description": "Custom AI tools tailored to your business needs."
+      },
+      {
+        "id": "svc2",
+        "name": "IT Consulting",
+        "description": "Expert advice to optimize your IT infrastructure and strategy."
+      },
+      {
+        "id": "svc3",
+        "name": "AI Tool Support",
+        "description": "Ongoing support and maintenance for AI solutions."
+      }
+    ],
+    "contact": {
+      "email": "info@plavaconsulting.co.uk",
+      "phone": "+44 1908 123456",
+      "address": "123 Innovation Drive, Milton Keynes, MK1 1AA, UK"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2024-06-01T12:00:00Z",
+    "license": "MIT"
+  }
+}
