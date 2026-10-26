@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plava Consulting Ltd</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f7fa; }
+    header { background: #004080; color: white; padding: 1rem; text-align: center; }
+    main { max-width: 900px; margin: 2rem auto; background: white; padding: 1rem 2rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1, h2 { margin-top: 0; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 0.5rem 0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+    button { background: #004080; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    form { margin-top: 1rem; display: flex; flex-direction: column; max-width: 400px; }
+    label { margin: 0.5rem 0 0.2rem; }
+    input[type=text], input[type=email] { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+    .message { margin-top: 1rem; padding: 0.5rem; border-radius: 4px; }
+    .message.success { background: #d4edda; color: #155724; }
+    .message.error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Plava Consulting Ltd</h1>
+    <p>IT Consulting & AI Tools - Milton Keynes, UK</p>
+  </header>
+  <main>
+    <section id="health-status">
+      <h2>System Health</h2>
+      <p id="health-message">Checking health...</p>
+    </section>
+
+    <section id="booking-section">
+      <h2>Book a Consultation</h2>
+      <form id="booking-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+        <button type="submit">Book</button>
+      </form>
+      <div id="booking-message" class="message" style="display:none"></div>
+    </section>
+
+    <section id="bookings-list">
+      <h2>Current Bookings</h2>
+      <ul id="bookings"></ul>
+      <p id="no-bookings" style="display:none; color:#666;">No bookings found.</p>
+    </section>
+  </main>
+
+  <script>
+    const healthMessage = document.getElementById('health-message');
+    const bookingsList = document.getElementById('bookings');
+    const noBookings = document.getElementById('no-bookings');
+    const bookingForm = document.getElementById('booking-form');
+    const bookingMessage = document.getElementById('booking-message');
+
+    // State: bookings array
+    let bookings = [];
+
+    // Fetch health status
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health');
+        if (res.ok) {
+          const text = await res.text();
+          healthMessage.textContent = `Status: ${text}`;
+          healthMessage.style.color = 'green';
+        } else {
+          healthMessage.textContent = 'Health check failed';
+          healthMessage.style.color = 'red';
+        }
+      } catch (e) {
+        healthMessage.textContent = 'Health check error';
+        healthMessage.style.color = 'red';
+      }
+    }
+
+    // Fetch bookings from /api/plava-website
+    async function loadBookings() {
+      try {
+        const res = await fetch('/api/plava-website');
+        if (!res.ok) throw new Error('Failed to load bookings');
+        const data = await res.json();
+        // Expect data.bookings array
+        bookings = Array.isArray(data.bookings) ? data.bookings : [];
+        renderBookings();
+      } catch (e) {
+        bookingsList.innerHTML = '<li style="color:red;">Error loading bookings</li>';
+      }
+    }
+
+    // Render bookings list
+    function renderBookings() {
+      bookingsList.innerHTML = '';
+      if (bookings.length === 0) {
+        noBookings.style.display = 'block';
+        return;
+      }
+      noBookings.style.display = 'none';
+      bookings.forEach((b, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${b.name} (${b.email})`;
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => cancelBooking(i);
+        li.appendChild(cancelBtn);
+        bookingsList.appendChild(li);
+      });
+    }
+
+    // Book a new consultation
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      bookingMessage.style.display = 'none';
+      const name = bookingForm.name.value.trim();
+      const email = bookingForm.email.value.trim();
+      if (!name || !email) return;
+
+      // Add booking locally and send to backend
+      const newBooking = { name, email };
+      // Optimistic UI update
+      bookings.push(newBooking);
+      renderBookings();
+
+      try {
+        // POST to /api/plava-website with booking data
+        const res = await fetch('/api/plava-website', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBooking)
+        });
+        if (!res.ok) throw new Error('Booking failed');
+        bookingMessage.textContent = 'Booking successful!';
+        bookingMessage.className = 'message success';
+        bookingMessage.style.display = 'block';
+        bookingForm.reset();
+      } catch (err) {
+        bookingMessage.textContent = 'Booking failed, please try again.';
+        bookingMessage.className = 'message error';
+        bookingMessage.style.display = 'block';
+        // Revert optimistic update
+        bookings.pop();
+        renderBookings();
+      }
+    });
+
+    // Cancel booking by index
+    async function cancelBooking(index) {
+      const bookingToCancel = bookings[index];
+      if (!bookingToCancel) return;
+
+      // Optimistic UI update
+      bookings.splice(index, 1);
+      renderBookings();
+
+      try {
+        // Send DELETE request to /api/plava-website with booking info
+        const res = await fetch('/api/plava-website', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingToCancel)
+        });
+        if (!res.ok) throw new Error('Cancel failed');
+      } catch (err) {
+        // Revert optimistic update
+        bookings.splice(index, 0, bookingToCancel);
+        renderBookings();
+        alert('Cancel failed, please try again.');
+      }
+    }
+
+    // Initial load
+    checkHealth();
+    loadBookings();
+  </script>
+</body>
+</html>
